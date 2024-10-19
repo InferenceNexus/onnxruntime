@@ -120,7 +120,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Float16Input) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
-            kNnapiExecutionProvider, kQnnExecutionProvider, kCoreMLExecutionProvider});
+            kNnapiExecutionProvider, kQnnExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Float16ScaleOutput) {
@@ -134,7 +134,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Float16ScaleOutput) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
-            kNnapiExecutionProvider, kQnnExecutionProvider, kCoreMLExecutionProvider});
+            kNnapiExecutionProvider, kQnnExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Float16InputScaleOutput) {
@@ -148,7 +148,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Float16InputScaleOutput) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
-            kNnapiExecutionProvider, kQnnExecutionProvider, kCoreMLExecutionProvider});
+            kNnapiExecutionProvider, kQnnExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Float16InputScaleOutput_Initializers) {
@@ -162,7 +162,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Float16InputScaleOutput_Initializers) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
-            kNnapiExecutionProvider, kQnnExecutionProvider, kCoreMLExecutionProvider});
+            kNnapiExecutionProvider, kQnnExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Bias) {
@@ -192,7 +192,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Bias_Float16Input) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kQnnExecutionProvider,
-            kOpenVINOExecutionProvider, kNnapiExecutionProvider, kCoreMLExecutionProvider});
+            kOpenVINOExecutionProvider, kNnapiExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Bias_Float16ScaleBiasOutput) {
@@ -207,7 +207,7 @@ TEST(LayerNormTest, LayerNorm_Scale_Bias_Float16ScaleBiasOutput) {
   // TRT, DNNL, OpenVINO and NNAPI, CoreML don't support this combination of datatypes
   test.Run(OpTester::ExpectResult::kExpectSuccess, "",
            {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
-            kNnapiExecutionProvider, kQnnExecutionProvider, kCoreMLExecutionProvider});
+            kNnapiExecutionProvider, kQnnExecutionProvider});
 }
 
 TEST(LayerNormTest, LayerNorm_Scale_Bias_Float16InputScaleBiasOutput) {
@@ -286,7 +286,10 @@ TYPED_TEST(LayerNormTest, LayerNorm17_opset) {
       std::vector<std::unique_ptr<IExecutionProvider>> execution_providers;
       execution_providers.push_back(DefaultCoreMLExecutionProvider(true));
       // coreml EP requires weight and bias to be initializers
-      test.Run(OpTester::ExpectResult::kExpectSuccess, "", {}, nullptr, &execution_providers);
+      test.Run(OpTester::ExpectResult::kExpectSuccess, "",
+               {kTensorrtExecutionProvider, kDnnlExecutionProvider, kOpenVINOExecutionProvider,
+                kNnapiExecutionProvider, kQnnExecutionProvider},
+               nullptr, &execution_providers);
     } else {
       test.Run();
     }

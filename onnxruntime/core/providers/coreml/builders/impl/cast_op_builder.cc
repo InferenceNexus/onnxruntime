@@ -58,7 +58,8 @@ Status CastOpBuilder::AddToModelBuilderImpl([[maybe_unused]] ModelBuilder& model
     }
 
     AddOperationInput(*op, "dtype", model_builder.AddScalarConstant(op->type(), "dtype", std::string(to_dtype)));
-    AddOperationOutput(*op, *node.OutputDefs()[0]);
+    auto output_dtype = node.OutputDefs()[0]->TypeAsProto()->tensor_type().elem_type();
+    AddOperationOutput(*op, *node.OutputDefs()[0], static_cast<int32_t>(output_dtype));
     model_builder.AddOperation(std::move(op));
   }
 #endif

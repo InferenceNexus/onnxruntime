@@ -40,11 +40,14 @@ void NormalizationOpBuilder::AddInitializersToSkip(ModelBuilder& model_builder, 
   }
 }
 
-Status NormalizationOpBuilder::AddToModelBuilderImpl(ModelBuilder& model_builder, const Node& node,
-                                                     const logging::Logger& logger) const {
+Status NormalizationOpBuilder::AddToModelBuilderImpl(
+    [[maybe_unused]] ModelBuilder& model_builder,
+    [[maybe_unused]] const Node& node,
+    [[maybe_unused]] const logging::Logger& logger) const {
   if (node.OpType() == "GroupNormalization") {
     return AddGroupNormToModelBuilderImpl(model_builder, node, logger);
   }
+#if defined(COREML_ENABLE_MLPROGRAM)
   const auto& input_defs = node.InputDefs();
   NodeAttrHelper helper(node);
   const auto& initializers(model_builder.GetInitializerTensors());
@@ -66,7 +69,7 @@ Status NormalizationOpBuilder::AddToModelBuilderImpl(ModelBuilder& model_builder
   std::vector<int64_t> axes(input_size - axis);
   std::iota(axes.begin(), axes.end(), axis);
   auto input_dtype = node.InputDefs()[0]->TypeAsProto()->tensor_type().elem_type();
-#if defined(COREML_ENABLE_MLPROGRAM)
+
   if (model_builder.CreateMLProgram()) {
     using namespace CoreML::Specification::MILSpec;
     std::string_view layer_input_name_x = node.InputDefs()[0]->Name();
@@ -105,8 +108,11 @@ Status NormalizationOpBuilder::AddToModelBuilderImpl(ModelBuilder& model_builder
   return Status::OK();
 }
 
-Status NormalizationOpBuilder::AddGroupNormToModelBuilderImpl(ModelBuilder& model_builder, const Node& node,
-                                                              const logging::Logger& logger) const {
+Status NormalizationOpBuilder::AddGroupNormToModelBuilderImpl(
+    [[maybe_unused]] ModelBuilder& model_builder,
+    [[maybe_unused]] const Node& node,
+    [[maybe_unused]] const logging::Logger& logger) const {
+#if defined(COREML_ENABLE_MLPROGRAM)
   const auto& input_defs = node.InputDefs();
   NodeAttrHelper helper(node);
   // const auto& initializers(model_builder.GetInitializerTensors());
@@ -127,7 +133,7 @@ Status NormalizationOpBuilder::AddGroupNormToModelBuilderImpl(ModelBuilder& mode
   std::iota(axes.begin(), axes.end(), axis);
   auto input_dtype = node.InputDefs()[0]->TypeAsProto()->tensor_type().elem_type();
   int64_t channel_dims = input_shape[1];
-#if defined(COREML_ENABLE_MLPROGRAM)
+
   if (model_builder.CreateMLProgram()) {
     using namespace CoreML::Specification::MILSpec;
     std::string_view layer_input_name_x = node.InputDefs()[0]->Name();
